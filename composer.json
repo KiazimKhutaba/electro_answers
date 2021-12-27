@@ -18,6 +18,9 @@
         "slim/slim": "^4.9",
         "slim/psr7": "^1.5",
         "php-di/php-di": "^6.3",
-        "ext-json": "*"
+        "ext-json": "*",
+        "robmorgan/phinx": "^0.12.9",
+        "ext-pdo": "*",
+        "sinergi/browser-detector": "^6.1"
     }
 }

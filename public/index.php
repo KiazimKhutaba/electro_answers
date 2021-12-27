@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
 use Repository\AnswerRepository;
+use Repository\UsageCounterRepository;
 use Service\VoiceService;
 use Slim\Factory\AppFactory;
 
@@ -38,11 +39,44 @@ $app->add(function (Request $request, RequestHandlerInterface $handler): Respons
 });
 
 
+
+$app->add(function (Request $request, RequestHandlerInterface $handler): Response {
+
+    $response = $handler->handle($request);
+
+    $detector = new \Service\UsageCounter();
+    $data = $detector->detectBrowser();
+
+
+    /**
+     * @var $repo UsageCounterRepository
+     */
+    $repo = $this->get(UsageCounterRepository::class);
+    $status = $repo->save($data);
+
+    //$response = $response->withHeader('X-Task-Completed', $status);
+
+    // Optional: Allow Ajax CORS requests with Authorization header
+    // $response = $response->withHeader('Access-Control-Allow-Credentials', 'true');
+
+    return $response;
+});
+
+
 $app->get('/',  function (Request $request, Response $response) {
     $content = file_get_contents(__DIR__ . '/index.html');
 
     $response->getBody()->write($content);
     return $response;
+});
+
+$app->get('/api/browser', function (Request $request, Response $response) {
+
+    $detector = new \Service\UsageCounter();
+    $data = to_json($detector->detectBrowser(), -1);
+
+    $response->getBody()->write($data);
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
 

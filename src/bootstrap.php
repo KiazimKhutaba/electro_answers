@@ -4,6 +4,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use DI\Container;
 use Dotenv\Dotenv;
+use Repository\UsageCounterRepository;
 use Service\VoiceService;
 use Repository\AnswerRepository;
 use Slim\Factory\AppFactory;
@@ -35,6 +36,10 @@ $container->set(AnswerRepository::class, function () use ($container) {
 
 $container->set(VoiceService::class, function () {
     return new VoiceService();
+});
+
+$container->set(UsageCounterRepository::class, function () use ($container) {
+   return new UsageCounterRepository($container->get(PDO::class));
 });
 
 AppFactory::setContainer($container);
