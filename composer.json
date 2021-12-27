@@ -19,8 +19,5 @@
         "slim/psr7": "^1.5",
         "php-di/php-di": "^6.3",
         "sinergi/browser-detector": "^6.1"
-    },
-    "require-dev": {
-        "robmorgan/phinx": "^0.12.9"
     }
 }
