@@ -1,0 +1,23 @@
+{
+    "name": "shaldon/electro_answers",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Simple Author",
+            "email": "simple@author.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "": "src"
+        },
+        "files": ["src/utils.php"]
+    },
+    "require": {
+        "vlucas/phpdotenv": "^5.4",
+        "slim/slim": "^4.9",
+        "slim/psr7": "^1.5",
+        "php-di/php-di": "^6.3",
+        "ext-json": "*"
+    }
+}

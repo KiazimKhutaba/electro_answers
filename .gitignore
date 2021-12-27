@@ -1,0 +1,4 @@
+.env.local
+.idea
+/vendor
+/node_modules
