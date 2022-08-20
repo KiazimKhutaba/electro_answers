@@ -4,7 +4,7 @@
     "authors": [
         {
             "name": "Simple Author",
-            "email": "simple@author.com"
+            "email": "simple@local.host"
         }
     ],
     "autoload": {
