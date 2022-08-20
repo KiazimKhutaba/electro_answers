@@ -6,7 +6,7 @@ use Sinergi\BrowserDetector\Browser;
 use Sinergi\BrowserDetector\Device;
 use Sinergi\BrowserDetector\Os;
 
-class UsageCounter
+class UsageCounterService
 {
     public function detectBrowser(): array
     {
@@ -23,7 +23,7 @@ class UsageCounter
             'device_name' => $device->getUserAgent()->getUserAgentString(),
             'device_os' => $platform,
             'device_ip' => $ip,
-            'referer' => $_SERVER['HTTP_REFERER'] ?: '',
+            'referer' => $_SERVER['HTTP_REFERER'] ?? '',
             'requested_url' => $_SERVER['REQUEST_URI'] ?: '',
             'created_at' => $currentDateTime->format(DATE_W3C)
         ];

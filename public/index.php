@@ -3,7 +3,9 @@
 require_once __DIR__ . '/../src/bootstrap.php';
 
 
+use Http\HomeController;
 use Http\JsonResponse;
+use Http\UsageCounterController;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -44,7 +46,7 @@ $app->add(function (Request $request, RequestHandlerInterface $handler): Respons
 
     $response = $handler->handle($request);
 
-    $detector = new \Service\UsageCounter();
+    $detector = new \Service\UsageCounterService();
     $data = $detector->detectBrowser();
 
 
@@ -54,52 +56,17 @@ $app->add(function (Request $request, RequestHandlerInterface $handler): Respons
     $repo = $this->get(UsageCounterRepository::class);
     $status = $repo->save($data);
 
-    //$response = $response->withHeader('X-Task-Completed', $status);
-
-    // Optional: Allow Ajax CORS requests with Authorization header
-    // $response = $response->withHeader('Access-Control-Allow-Credentials', 'true');
-
     return $response;
 });
 
 
-$app->get('/',  function (Request $request, Response $response) {
-    $content = file_get_contents(__DIR__ . '/index.html');
-
-    $response->getBody()->write($content);
-    return $response;
-});
-
-$app->get('/api/browser', function (Request $request, Response $response) {
-
-    $detector = new \Service\UsageCounter();
-    $data = to_json($detector->detectBrowser(), -1);
-
-    $response->getBody()->write($data);
-    return $response->withHeader('Content-Type', 'application/json');
-});
+$app->get('/stats', [UsageCounterController::class, 'getUsageList']);
+$app->get('/',  [HomeController::class, 'index']);
+$app->get('/api/browser', [HomeController::class, 'getBrowser']);
 
 
-$app->get('/api/answers/random', function (Request $request, Response $response) {
-
-    $repo = $this->get(AnswerRepository::class);
-    $answers = $repo->getRandom(5);
-    $json = to_json($answers);
-
-    $response->getBody()->write($json);
-    return $response->withHeader('Content-Type', 'application/json');
-});
-
-
-$app->get('/api/answers', function (Request $request, Response $response) 
-{
-    $repo = $this->get(AnswerRepository::class);
-    $answers = $repo->getAll(5);
-    $json = to_json($answers);
-    
-    $response->getBody()->write($json);
-    return $response->withHeader('Content-Type', 'application/json');
-});
+$app->get('/api/answers/random', [\Http\AnswersController::class, 'getRandom']);
+$app->get('/api/answers', [\Http\AnswersController::class, 'getAll']);
 
 
 $app->post('/api/getaudio', function(Request $request, Response $response) {
@@ -112,6 +79,8 @@ $app->post('/api/getaudio', function(Request $request, Response $response) {
     $modelId = intval($post['model']) ?: 19;
 
     $record = $service->getRecord($text, $voiceId, $modelId);
+    $response->getBody()->write($record);
+    //return $response;
     $response->getBody()->write($record);
 
     return $response->withHeader('Content-Type', 'audio/wav');

@@ -22,4 +22,13 @@ class UsageCounterRepository
         $statement = $this->pdo->prepare($sql);
         return $statement->execute($data);
     }
+
+
+    public function getAll(): array
+    {
+        $sql = 'SELECT * FROM usage_statistics';
+        $statement = $this->pdo->query($sql);
+
+        return $statement->fetchAll();
+    }
 }

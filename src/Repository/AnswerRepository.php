@@ -25,7 +25,7 @@ class AnswerRepository
 
     public function getRandom(int $qnt = 5) {
 
-        $func = [ 'mysql' => 'rand()', 'pgsql' => 'random()' ];
+        $func = [ 'mysql' => 'rand()', 'pgsql' => 'random()', 'sqlite' => 'random()' ];
         $driver = $_ENV['DB_DRIVER'];
 
         $sql = "SELECT id, answer_text as atext, complexity 
